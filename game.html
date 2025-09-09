@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>48 Sexy Phrases - Flipping Cards</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #fdfdfd;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 10px 20px;
+      }
+      .title {
+        font-size: 2em;
+        color: #c0392b;
+        margin-bottom: 20px;
+        text-align: center;
+      }
+      .container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        width: 85%;
+        column-gap: 20px;
+        row-gap: 10px;
+        margin: 0 auto;
+      }
+      .card-inner {
+        width: 130px;
+        height: 140px;
+        position: relative;
+        transition: transform 0.6s;
+        transform-style: preserve-3d;
+        cursor: pointer;
+      }
+      .card-inner.flipped {
+        transform: rotateY(180deg);
+      }
+      .card-inner.changed .card-front {
+        background-color: pink;
+      }
+      .card-face {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        backface-visibility: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 10px;
+        text-align: center;
+      }
+      .card-front {
+        background-color: #ffffff;
+      }
+      .card-back {
+        background-color: #ffe6e6;
+        transform: rotateY(180deg);
+      }
+      .card-number {
+        font-weight: bold;
+        font-size: 1.2em;
+        margin-bottom: 5px;
+        color: #c0392b;
+      }
+      .card-text {
+        font-size: 0.9em;
+        line-height: 1.2;
+        color: #333;
+      }
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+      }
+      .modal {
+        background: #fff;
+        padding: 20px 30px;
+        border-radius: 10px;
+        text-align: center;
+        max-width: 400px;
+        width: 80%;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+      }
+      .modal p.pickup-line {
+        font-size: 1.2em;
+        margin-bottom: 15px;
+        color: #e74c3c;
+      }
+      .modal-buttons {
+        display: flex;
+        justify-content: space-around;
+      }
+      .modal-buttons button {
+        padding: 10px 20px;
+        border: none;
+        background: #c0392b;
+        color: #fff;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1em;
+      }
+      .modal-buttons button:hover {
+        background: #a83224;
+      }
+
+      @media (max-width: 1000px) {
+        .container {
+          width: 100%;
+          column-gap: 15px;
+          row-gap: 8px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1 class="title">Pick one and let the fun beggin</h1>
+    <div class="container" id="cardContainer"></div>
+
+    <div id="modalOverlay" class="modal-overlay">
+      <div class="modal">
+        <p class="pickup-line">
+          "Hey there, are you ready to keep the heat on, or shall we call it a night?"
+        </p>
+        <div class="modal-buttons">
+          <button id="quitButton">Quit</button>
+          <button id="continueButton">Continue</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="modalOverlay2" class="modal-overlay">
+      <div class="modal">
+        <p class="pickup-line">
+          "You've come this far—hot stuff, ready to raise the stakes or call it a wrap?"
+        </p>
+        <div class="modal-buttons">
+          <button id="quitButton2">Quit</button>
+          <button id="continueButton2">Continue</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const phrases = [
+        { number: 1,  text: "Blindfold your partner & do what you want" },
+        { number: 2,  text: "Blow me!" },
+        { number: 3,  text: "Massage your partner’s crotch" },
+        { number: 4,  text: "Give oral, tied up" },
+        { number: 5,  text: "What's your favorite position" },
+        { number: 6,  text: "Remove your bottoms" },
+        { number: 7,  text: "Do a sexy dance" },
+        { number: 8,  text: "Restrain me (Do what you want)" },
+        { number: 9,  text: "Take your top off!" },
+        { number: 10, text: "Perform a massage" },
+        { number: 11, text: "Let's 69!" },
+        { number: 12, text: "Doggie style" },
+        { number: 13, text: "Fondle me" },
+        { number: 14, text: "Suck these nipples" },
+        { number: 15, text: "Let me nibble your ear" },
+        { number: 16, text: "Lick me everywhere" },
+        { number: 17, text: "Skip your next turn" },
+        { number: 18, text: "Foot massage" },
+        { number: 19, text: "Get naked" },
+        { number: 20, text: "Striptease please" },
+        { number: 21, text: "Tease your partner's nipple" },
+        { number: 22, text: "Spank me" },
+        { number: 23, text: "Let’s do it in the Kitchen" },
+        { number: 24, text: "Let’s do it in bed" },
+        { number: 25, text: "2 minutes of oral sex" },
+        { number: 26, text: "Kiss me (not on the lips)" },
+        { number: 27, text: "Make love to me" },
+        { number: 28, text: "Make a rule!" },
+        { number: 29, text: "Give me a bear hug" },
+        { number: 30, text: "Take off your pants" },
+        { number: 31, text: "Masturbate/Finger yourself (sexy...)" },
+        { number: 32, text: "Tease me" },
+        { number: 33, text: "Explore me" },
+        { number: 34, text: "Let me explore you" },
+        { number: 35, text: "Taste me" },
+        { number: 36, text: "Show me your tits" },
+        { number: 37, text: "Pin me down" },
+        { number: 38, text: "Stroke me" },
+        { number: 39, text: "Show me how you like it" },
+        { number: 40, text: "Let me do it for you" },
+        { number: 41, text: "Naked wrestling, loser tied up" },
+        { number: 42, text: "Kiss me passionately" },
+        { number: 43, text: "Touch me gently" },
+        { number: 44, text: "Eat Me" },
+        { number: 45, text: "Make me moan" },
+        { number: 46, text: "Kiss me for 10 seconds" },
+        { number: 47, text: "Your choice (any action!)" },
+        { number: 48, text: "Again! (repeat last action)" },
+      ];
+
+      let openedCount = 0;
+      let popupShown = false;
+      let secondPopupShown = false;
+      let currentlyOpenCard = null;
+
+      function createCards() {
+        const container = document.getElementById("cardContainer");
+
+        phrases.forEach(({ number, text }) => {
+          const card = document.createElement("div");
+          card.classList.add("card");
+
+          const cardInner = document.createElement("div");
+          cardInner.classList.add("card-inner");
+
+          cardInner.dataset.opened = "false";
+
+          const cardFront = document.createElement("div");
+          cardFront.classList.add("card-face", "card-front");
+          const frontContent = document.createElement("div");
+          frontContent.innerHTML = `
+            <div class="card-number">Card #${number}</div>
+            <div class="card-text">Click Me!</div>
+          `;
+          cardFront.appendChild(frontContent);
+
+          const cardBack = document.createElement("div");
+          cardBack.classList.add("card-face", "card-back");
+          const backContent = document.createElement("div");
+          backContent.innerHTML = `
+            <div class="card-number">#${number}</div>
+            <div class="card-text">${text}</div>
+          `;
+          cardBack.appendChild(backContent);
+
+          cardInner.appendChild(cardFront);
+          cardInner.appendChild(cardBack);
+          card.appendChild(cardInner);
+
+          cardInner.addEventListener("click", () => {
+            if (currentlyOpenCard && currentlyOpenCard !== cardInner) {
+              currentlyOpenCard.classList.remove("flipped");
+              currentlyOpenCard.classList.add("changed");
+              currentlyOpenCard = null;
+            }
+            
+            if (cardInner.classList.contains("flipped")) {
+              cardInner.classList.remove("flipped");
+              cardInner.classList.add("changed");
+              currentlyOpenCard = null;
+            } else {
+              if (cardInner.dataset.opened === "false") {
+                openedCount++;
+                cardInner.dataset.opened = "true";
+              }
+              cardInner.classList.remove("changed");
+              cardInner.classList.add("flipped");
+              currentlyOpenCard = cardInner;
+            }
+
+            if (openedCount >= 5 && !popupShown) {
+              showModal();
+              popupShown = true;
+            }
+            if (openedCount >= 10 && !secondPopupShown) {
+              showModal2();
+              secondPopupShown = true;
+            }
+          });
+
+          container.appendChild(card);
+        });
+      }
+
+      function showModal() {
+        document.getElementById("modalOverlay").style.display = "flex";
+      }
+
+      function showModal2() {
+        document.getElementById("modalOverlay2").style.display = "flex";
+      }
+
+      document.getElementById("quitButton").addEventListener("click", () => {
+        window.close();
+      });
+
+      document.getElementById("continueButton").addEventListener("click", () => {
+        document.getElementById("modalOverlay").style.display = "none";
+      });
+
+      document.getElementById("quitButton2").addEventListener("click", () => {
+        window.close();
+      });
+
+      document.getElementById("continueButton2").addEventListener("click", () => {
+        document.getElementById("modalOverlay2").style.display = "none";
+      });
+
+      createCards();
+    </script>
+  </body>
+</html>
